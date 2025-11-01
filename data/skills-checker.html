@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills Checker</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-copy { background: #4CAF50; color: white; }
+        .btn-clear { background: #f44336; color: white; }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .skills {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .skill {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .skill:hover {
+            background: #f9f9f9;
+        }
+        .skill.checked {
+            background: #e8f5e9;
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        label {
+            flex: 1;
+            cursor: pointer;
+        }
+        .count {
+            color: #666;
+            font-size: 12px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #323232;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Skills Checker</h1>
+        <div>Checked: <strong id="count">0</strong></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-copy" onclick="copy()">Copy</button>
+        <button class="btn-clear" onclick="clear()">Clear</button>
+        <input type="text" id="search" placeholder="Search..." oninput="filter()">
+    </div>
+
+    <div class="skills" id="skills"></div>
+    <div id="notification" class="notification"></div>
+
+    <script>
+        const skills = [
+            { name: "Formik", count: 2 },
+            { name: "Joi", count: 2 },
+            { name: "Flux", count: 2 },
+            { name: "Relay", count: 2 },
+            { name: "Backbone", count: 2 },
+            { name: "Marionette", count: 2 },
+            { name: "BEM/OOCSS", count: 2 },
+            { name: "OOCSS", count: 2 },
+            { name: "Capacitor", count: 1 },
+            { name: "Module Federation", count: 1 },
+            { name: "Husky", count: 1 },
+            { name: "Flutter", count: 1 },
+            { name: "LXD", count: 1 },
+            { name: "ES8+", count: 1 },
+            { name: "JSS", count: 1 },
+            { name: "LogRocket", count: 1 },
+            { name: "Jenkins", count: 1 },
+            { name: "CircleCI", count: 1 },
+            { name: "GA4", count: 1 },
+            { name: "Tizen", count: 1 },
+            { name: "WebOS", count: 1 },
+            { name: "PrimeReact", count: 1 },
+            { name: "LESS", count: 1 },
+            { name: "Azure DevOps", count: 1 },
+            { name: "NodeSass", count: 1 },
+            { name: "CodeIgniter", count: 1 },
+            { name: "Spring", count: 1 },
+            { name: "Spring Boot", count: 1 },
+            { name: "PHPUnit", count: 1 },
+            { name: "JUnit", count: 1 },
+            { name: "OAuth2", count: 1 },
+            { name: "RabbitMQ", count: 1 },
+            { name: "Kafka", count: 1 },
+            { name: "GitHub Actions", count: 1 },
+            { name: "GitLab CI", count: 1 },
+            { name: "Azure", count: 1 },
+            { name: "Ping Identity Provider", count: 1 },
+            { name: "Confluence", count: 1 },
+            { name: "Knex", count: 1 },
+            { name: "SmartTV Development", count: 1 },
+            { name: "Schema Versioning/Migrations", count: 1 },
+            { name: "GPU Acceleration", count: 1 },
+            { name: "Microinteractions", count: 1 },
+            { name: "OIDC", count: 1 },
+            { name: "NextAuth.js", count: 1 },
+            { name: "FastAPI", count: 1 },
+            { name: "Flask", count: 1 },
+            { name: "React Spring", count: 1 },
+            { name: "Sonner", count: 1 },
+            { name: "Lucide Icons", count: 1 },
+            { name: "Provider Pattern", count: 1 }
+        ];
+
+        function render() {
+            const container = document.getElementById('skills');
+            container.innerHTML = skills.map((s, i) => `
+                <div class="skill" data-name="${s.name.toLowerCase()}">
+                    <input type="checkbox" id="s${i}" onchange="update()">
+                    <label for="s${i}">${s.name}</label>
+                    <span class="count">${s.count}</span>
+                </div>
+            `).join('');
+        }
+
+        function update() {
+            const checked = document.querySelectorAll('input:checked').length;
+            document.getElementById('count').textContent = checked;
+            document.querySelectorAll('.skill').forEach(s => {
+                s.classList.toggle('checked', s.querySelector('input').checked);
+            });
+        }
+
+        function copy() {
+            const list = Array.from(document.querySelectorAll('input:checked'))
+                .map(cb => cb.nextElementSibling.textContent);
+            if (!list.length) return notify('No skills selected');
+            navigator.clipboard.writeText(`I have the following skills from the missing list:\n\n${list.join('\n')}`);
+            notify(`Copied ${list.length} skills`);
+        }
+
+        function clear() {
+            document.querySelectorAll('input').forEach(cb => cb.checked = false);
+            update();
+        }
+
+        function filter() {
+            const term = document.getElementById('search').value.toLowerCase();
+            document.querySelectorAll('.skill').forEach(s => {
+                s.style.display = s.dataset.name.includes(term) ? 'flex' : 'none';
+            });
+        }
+
+        function notify(msg) {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.style.display = 'block';
+            setTimeout(() => n.style.display = 'none', 2000);
+        }
+
+        render();
+    </script>
+</body>
+</html>

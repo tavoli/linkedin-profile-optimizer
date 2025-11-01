@@ -1,0 +1,32 @@
+{
+  "name": "linkedin-job-scraper",
+  "version": "1.0.0",
+  "description": "A sophisticated browser-based JavaScript automation tool for extracting LinkedIn job listings",
+  "main": "linkedin-job-scraper.js",
+  "scripts": {
+    "build": "npm run minify",
+    "minify": "terser linkedin-job-scraper.js -o linkedin-job-scraper.min.js --compress --mangle --comments '/^!/'",
+    "test": "echo 'See TESTING.md for manual testing procedures'"
+  },
+  "keywords": [
+    "linkedin",
+    "job-scraper",
+    "automation",
+    "web-scraping",
+    "job-search",
+    "data-extraction"
+  ],
+  "author": "LinkedIn Job Scraper Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "terser": "^5.44.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/linkedin-job-scraper"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/linkedin-job-scraper/issues"
+  },
+  "homepage": "https://github.com/yourusername/linkedin-job-scraper#readme"
+}
