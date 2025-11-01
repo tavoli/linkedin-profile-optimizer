@@ -13,16 +13,16 @@ fi
 
 # Create minified version
 echo "📦 Minifying linkedin-job-scraper.js..."
-npx terser linkedin-job-scraper.js \
-    -o linkedin-job-scraper.min.js \
+npx terser "$(dirname "$0")/linkedin-job-scraper.js" \
+    -o "$(dirname "$0")/linkedin-job-scraper.min.js" \
     --compress \
     --mangle \
     --comments '/^!/' \
     || { echo "❌ Minification failed"; exit 1; }
 
 # Get file sizes
-ORIGINAL_SIZE=$(wc -c < linkedin-job-scraper.js | tr -d ' ')
-MINIFIED_SIZE=$(wc -c < linkedin-job-scraper.min.js | tr -d ' ')
+ORIGINAL_SIZE=$(wc -c < "$(dirname "$0")/linkedin-job-scraper.js" | tr -d ' ')
+MINIFIED_SIZE=$(wc -c < "$(dirname "$0")/linkedin-job-scraper.min.js" | tr -d ' ')
 REDUCTION=$(echo "scale=2; 100 - ($MINIFIED_SIZE * 100 / $ORIGINAL_SIZE)" | bc)
 
 echo "✓ Minification complete!"
